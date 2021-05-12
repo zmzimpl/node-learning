@@ -1,32 +1,17 @@
-/**
- * Some predefined delays (in milliseconds).
- */
-export enum Delays {
-  Short = 500,
-  Medium = 2000,
-  Long = 5000,
-}
-
-/**
- * Returns a Promise<string> that resolves after given time.
- *
- * @param {string} name - A name.
- * @param {number=} [delay=Delays.Medium] - Number of milliseconds to delay resolution of the Promise.
- * @returns {Promise<string>}
- */
-function delayedHello(
-  name: string,
-  delay: number = Delays.Medium,
-): Promise<string> {
-  return new Promise((resolve: (value?: string) => void) =>
-    setTimeout(() => resolve(`Hello, ${name}`), delay),
-  );
-}
-
-// Below are examples of using ESLint errors suppression
-// Here it is suppressing missing return type definitions for greeter function
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function greeter(name: string) {
-  return await delayedHello(name, Delays.Long);
-}
+import * as https from 'https';
+const cheerio = require('cheerio');
+// import * as cheerio from 'cheerio';
+https.get('https://bscscan.com/address/0xc65981e512010cf001820a6b1bca60428fdb1018',(res) => {
+    // 分段返回的 自己拼接
+    let html = '';
+    // 有数据产生的时候 拼接
+    res.on('data',function(chunk){
+        html += chunk;
+    })
+    // 拼接完成
+    res.on('end',function(){
+      // console.log(html);
+      const $ = cheerio.load(html);
+      console.log($('.col-md-8')[1].childNodes[0].data);
+    })
+})
